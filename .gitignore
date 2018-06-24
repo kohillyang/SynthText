@@ -88,3 +88,14 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+
+*.h5
+
+background_images/bg_img
+
+.idea
+
+*.ttf
+
+*.tar.gz

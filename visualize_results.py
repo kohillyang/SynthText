@@ -66,8 +66,9 @@ def main(db_fname):
         print "  ** no. of words : ", colorize(Color.YELLOW, wordBB.shape[-1])
         print "  ** text         : ", colorize(Color.GREEN, txt)
 
-        if 'q' in raw_input("next? ('q' to exit) : "):
-            break
+        # if 'q' in raw_input("next? ('q' to exit) : "):
+        #     break
+        plt.show()
     db.close()
 
 if __name__=='__main__':

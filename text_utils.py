@@ -91,7 +91,7 @@ class RenderFont(object):
         self.max_shrink_trials = 5 # 0.9^5 ~= 0.6
         # the minimum number of characters that should fit in a mask
         # to define the maximum font height.
-        self.min_nchar = 2
+        self.min_nchar = 1
         self.min_font_h = 16 #px : 0.6*12 ~ 7px <= actual minimum height
         self.max_font_h = 120 #px
         self.p_flat = 0.10
@@ -183,7 +183,7 @@ class RenderFont(object):
         mid_idx = wl//2
         BS = self.baselinestate.get_sample()
         curve = [BS['curve'](i-mid_idx) for i in xrange(wl)]
-        curve[mid_idx] = -np.sum(curve) / (wl-1)
+        curve[mid_idx] = -np.sum(curve) / (wl-1 + 0.1)
         rots  = [-int(math.degrees(math.atan(BS['diff'](i-mid_idx)/(font.size/2)))) for i in xrange(wl)]
 
         bbs = []
@@ -191,7 +191,11 @@ class RenderFont(object):
         rect = font.get_rect(word_text[mid_idx])
         rect.centerx = surf.get_rect().centerx
         rect.centery = surf.get_rect().centery + rect.height
-        rect.centery +=  curve[mid_idx]
+        try:
+            rect.centery +=  curve[mid_idx]
+        except Exception as e:
+            print(curve[mid_idx])
+            raise e
         ch_bounds = font.render_to(surf, rect, word_text[mid_idx], rotation=rots[mid_idx])
         ch_bounds.x = rect.x + ch_bounds.x
         ch_bounds.y = rect.y - ch_bounds.y
@@ -548,7 +552,7 @@ class TextSource(object):
             chs = [ch in char_ex for ch in l]
             return not np.all(chs)
 
-        return [ (len(l)> self.min_nchar
+        return [ (len(l)>= self.min_nchar
                  and self.check_symb_frac(l,f)
                  and is_txt(l)) for l in txt ]
 
